@@ -1,0 +1,88 @@
+
+
+<script type="module">
+	// Import the functions you need from the SDKs you need
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+	import { getAnalytics } from "firebase/analytics";
+	import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+	import { getdatabase, set, ref, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-databse.js";
+	import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+	// TODO: Add SDKs for Firebase products that you want to use
+	// https://firebase.google.com/docs/web/setup#available-libraries
+  
+	// Your web app's Firebase configuration
+	const firebaseConfig = {
+	  apiKey: "AIzaSyDOrXbn2PyvCmavHgdlBcPGvp3Gw6Igmgs",
+	  authDomain: "ubawaterconservation.firebaseapp.com",
+	  databaseURL: "https://ubawaterconservation-default-rtdb.firebaseio.com",
+	  projectId: "ubawaterconservation",
+	  storageBucket: "ubawaterconservation.appspot.com",
+	  messagingSenderId: "320032211017",
+	  appId: "1:320032211017:web:898f4ffb51a8550606ff98",
+	  measurementId: "G-BXE99PC4K4"
+	};
+  
+	// Initialize Firebase
+	const app = initializeApp(firebaseConfig);
+	const analytics = getAnalytics(app);
+	const database = getdatabase(app);
+	const auth = getAuth();
+
+	signUp.addEventListener('click',(e) => {
+
+		var email = document.getElementById('email').value;
+		var password = document.getElementById('password').value;
+		var username = document.getElementById('username').value;
+
+
+		createUserWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+			// Signed up 
+			const user = userCredential.user;
+
+			set(ref(database, 'users/' + user.uid),{
+				username: username,
+				email: email
+			})
+			alert('User Successfully Created!');
+			// ...
+		})
+		.catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+
+			alert(errorMessage);
+			// ..
+  		});
+
+	});
+
+	signIn.addEventListener('click', (e)=>{
+
+		var email = document.getElementById('email').value;
+		var password = document.getElementById('password').value;
+
+		signInWithEmailAndPassword(auth, email, password)
+		.then((userCredential) => {
+			// Signed in 
+			const user = userCredential.user;
+			const dt = new Date();
+
+			update(ref(database, 'users/' + user.uid),{
+				last_login:dt
+			})
+
+			alert('User Logged In!');
+			// ...
+		})
+		.catch((error) => {
+			const errorCode = error.code;
+			const errorMessage = error.message;
+
+			alert(errorMessage);
+		});
+	});
+  </script>
+
+
